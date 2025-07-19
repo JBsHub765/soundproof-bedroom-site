@@ -32,7 +32,7 @@ Another quick fix is to hang a soundproof blanket or moving blanket on the door.
 Sometimes the noise you hear through the door also travels through the walls and floors. Position a wardrobe, bookcase or tall dresser against the wall near the door to add mass and block sound【667730347589269†L294-L301】. Place a thick rug or carpet runner in front of the door to absorb footsteps【667730347589269†L303-L308】. If noise still bothers you, combine door fixes with our general tips on [soundproofing a room](/posts/soundproof-room) and [soundproofing walls](/posts/soundproof-wall).
 
 <div>
-  [Explore bedroom door soundproofing products](affiliate-link-PLACEHOLDER)
+  [Explore our recommended bedroom door draft stopper](https://www.amazon.com/dp/B072QDSJKT?tag=jbinsights-21)
 </div>
 
 ## Frequently asked questions
