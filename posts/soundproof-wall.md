@@ -51,7 +51,7 @@ These solutions won't match the performance of a rebuilt wall but will make a no
 Wall soundproofing works best when you combine mass, insulation, decoupling and sealing. For major renovations, follow the layered approach with MLV, insulation and resilient channels. For smaller budgets or rental properties, focus on adding mass via bookcases and heavy décor. Pair wall improvements with other techniques like [soundproofing doors](/posts/soundproof-door) and [soundproofing floors and ceilings](/posts/soundproof-room) for whole‑room noise reduction.
 
 <div>
-  [Recommended wall soundproofing materials](affiliate-link-PLACEHOLDER)
+  [[Explore our recommended mass-loaded vinyl roll](https://www.amazon.com/dp/B008JHE1P6?tag=jbinsights-21)
 </div>
 
 ## Frequently asked questions
