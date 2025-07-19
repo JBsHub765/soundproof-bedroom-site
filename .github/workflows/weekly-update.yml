@@ -1,0 +1,84 @@
+name: Weekly update and sitemap ping
+
+on:
+  schedule:
+    # 06:00 UTC on Mondays (07:00 Europe/London during BST)
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Generate new update post
+        env:
+          TZ: UTC
+        run: |
+          set -e
+          KEYWORDS=("soundproof foam panels" "soundproof curtains diy" "best acoustic sealant" "noise reducing rugs" "weatherstripping for doors")
+          INDEX=$(( $(date +%U) % ${#KEYWORDS[@]} ))
+          KEYWORD="${KEYWORDS[$INDEX]}"
+          SLUG=$(echo "$KEYWORD" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd 'a-z0-9-')
+          DATE=$(date -u +%Y-%m-%d)
+          POST_DIR="posts"
+          mkdir -p "$POST_DIR"
+          FILE="$POST_DIR/${DATE}-${SLUG}.md"
+          cat > "$FILE" <<EOF_MARKER
+---
+layout: post
+title: "Update: $KEYWORD"
+date: $DATE
+description: "Automated weekly update about $KEYWORD."
+---
+
+# $KEYWORD
+
+This automated post introduces a related topic: **$KEYWORD**. Replace this placeholder content with a detailed 600‑word article that explores the topic, explains why it's important for soundproofing and includes practical tips. Remember to add H2 and H3 headings, internal links to other articles on this site, an affiliate link placeholder where appropriate and a JSON‑LD FAQ schema at the end.
+
+<div>
+  [Recommended products](affiliate-link-PLACEHOLDER)
+</div>
+EOF_MARKER
+
+      - name: Regenerate sitemap
+        run: |
+          python3 - <<'PY'
+import os
+repo = os.environ['GITHUB_REPOSITORY'].split('/')[-1]
+posts_dir = 'posts'
+entries = []
+for name in sorted(os.listdir(posts_dir)):
+    if name.endswith('.md'):
+        slug = os.path.splitext(name)[0]
+        entries.append(f'  <url>\n    <loc>/{repo}/posts/{slug}</loc>\n  </url>\n')
+with open('sitemap.xml', 'w') as f:
+    f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+    f.write(f'  <url>\n    <loc>/{repo}/</loc>\n  </url>\n')
+    f.writelines(entries)
+    f.write('</urlset>')
+PY
+
+      - name: Commit and push changes
+        run: |
+          git add .
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Automated weekly update"
+            git push
+          fi
+
+      - name: Ping Google with new sitemap
+        env:
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+        run: |
+          BASE_URL="https://${OWNER}.github.io/${REPO}"
+          curl -s "https://www.google.com/ping?sitemap=${BASE_URL}/sitemap.xml" || true
