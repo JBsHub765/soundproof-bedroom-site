@@ -55,7 +55,7 @@ These methods are most effective when combined【743105201352173†L560-L562】.
 For focused advice on specific structures, visit our guides on [soundproofing walls](/posts/soundproof-wall), [soundproofing doors](/posts/soundproof-door) and [soundproofing a bedroom door](/posts/soundproof-bedroom-door).
 
 <div>
-  [Discover top-rated soundproofing solutions](affiliate-link-PLACEHOLDER)
+      [Discover top‑rated soundproof curtains](https://www.amazon.com/dp/B01CS31NDE?tag=jbinsights-21)
 </div>
 
 ## Frequently asked questions
