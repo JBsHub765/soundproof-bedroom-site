@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: /soundproof-bedroom-site/sitemap.xml
