@@ -9,9 +9,8 @@ baseurl: "/soundproof-bedroom-site"
 # The base hostname & protocol for your site. Leave the placeholder
 # here; GitHub Pages will replace it automatically based on your account
 # when the site builds. You can also set this manually to
-# https://YOUR_USERNAME.github.io if preferred.
-url: "https://{{user}}.github.io"
-
+# https://YOUR_USERNAME.github.io if pururl: "https://jbshub765.github.io"
+url: "https://jbshub765.github.io"
 theme: minima
 plugins:
   - jekyll-feed
