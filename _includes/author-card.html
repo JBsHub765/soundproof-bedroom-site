@@ -1,0 +1,15 @@
+{% raw %}<div class="author-card" style="border:1px solid #eee;padding:1rem;border-radius:8px;margin:1.25rem 0;">
+  <div style="display:flex;gap:12px;align-items:center;">
+    {% if include.photo %}
+      <img src="{{ include.photo }}" alt="{{ include.name }} headshot" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+    {% endif %}
+    <div>
+      <strong>{{ include.name | default: "JBInsights Editorial" }}</strong>
+      {% if include.role %}<div style="opacity:.8">{{ include.role }}</div>{% endif %}
+      {% if include.creds %}<div style="opacity:.8">{{ include.creds }}</div>{% endif %}
+    </div>
+  </div>
+  {% if include.bio %}
+    <p style="margin:.75rem 0 0">{{ include.bio }}</p>
+  {% endif %}
+</div>{% endraw %}
