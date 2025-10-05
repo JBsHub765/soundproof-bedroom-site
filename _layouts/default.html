@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% seo %}
+  <link rel="stylesheet" href="{{ site.baseurl }}/assets/styles.css">
+
+  {%- if site.google_analytics -%}
+  <!-- Google Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '{{ site.google_analytics }}', { 'anonymize_ip': true });
+  </script>
+  {%- endif -%}
+
+  {%- if site.plausible_domain -%}
+  <!-- Plausible analytics -->
+  <script defer data-domain="{{ site.plausible_domain }}" src="https://plausible.io/js/script.js"></script>
+  <script defer data-domain="{{ site.plausible_domain }}" src="https://plausible.io/js/plausible.outbound-links.js"></script>
+  {%- endif -%}
+</head>
+<body>
+  {% include nav.html %}
+  <main class="container">
+    {{ content }}
+  </main>
+  <footer class="site-footer">
+    <p>&copy; {{ site.time | date: "%Y" }} JBInsights ·
+      <a href="{{ site.baseurl }}/privacy-policy/">Privacy</a> ·
+      <a href="{{ site.baseurl }}/affiliate-disclosure/">Disclosure</a>
+    </p>
+  </footer>
+</body>
+</html>
