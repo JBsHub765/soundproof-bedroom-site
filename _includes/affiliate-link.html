@@ -1,0 +1,16 @@
+{% raw %}{% assign base = include.url %}
+{% if include.asin and base == nil %}
+  {% assign base = 'https://www.amazon.com/dp/' | append: include.asin %}
+{% endif %}
+{% if base contains '?' %}
+  {% assign aff = base | append: '&tag=jbinsights-21' %}
+{% else %}
+  {% assign aff = base | append: '?tag=jbinsights-21' %}
+{% endif %}
+<a href="{{ aff }}"
+  rel="sponsored noopener"
+  target="_blank"
+  class="{{ include.class | default: 'btn btn-primary' }}"
+  onclick="if (typeof plausible === 'function') { plausible('affiliate_click', {props:{label: '{{ include.asin | default: include.url }}'}}); } if (typeof gtag === 'function') { gtag('event','affiliate_click',{event_category:'Affiliate', event_label:'{{ include.asin | default: include.url }}'}); }">
+  {{ include.text | default: 'Check price on Amazon' }}
+</a> <span aria-hidden="true">[paid link]</span>{% endraw %}
