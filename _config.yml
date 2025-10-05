@@ -1,22 +1,15 @@
-title: "Zero‑Touch Soundproofing Microsite"
-description: "A niche microsite that explores practical ways to reduce noise at home."
-# The repository is served as a project page under your GitHub Pages domain.
-# Set `baseurl` to the repository name prefixed with a slash so that links
-# generate correctly when the site is hosted at
-# https://USERNAME.github.io/soundproof-bedroom-site
-baseurl: "/soundproof-bedroom-site"
-
-# The base hostname & protocol for your site. Leave the placeholder
-# here; GitHub Pages will replace it automatically based on your account
-# when the site builds. You can also set this manually to
-# https://YOUR_USERNAME.github.io if pururl: "https://jbshub765.github.io"
 url: "https://jbshub765.github.io"
-theme: minima
+baseurl: "/soundproof-bedroom-site"
 plugins:
-  - jekyll-feed
+  - jekyll-seo-tag
   - jekyll-sitemap
-
-# Custom variables
-author: "Microsite Bot"
-
-# Note: GitHub Pages will install the necessary gems automatically when you push
+title: "JBInsights"
+description: "Practical buying advice and how-to guides in acoustics, ergonomics, smart-home, and travel gadgets."
+author: JBInsights Editorial
+markdown: kramdown
+defaults:
+  - scope: {path: ""}
+    values:
+      layout: default
+google_analytics: G-87WW4V1T7L
+plausible_domain: "jbshub765.github.io"
