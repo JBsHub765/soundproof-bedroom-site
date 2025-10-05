@@ -1,0 +1,57 @@
+name: Plausible Metrics
+on:
+  schedule:
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Fetch Plausible metrics
+        env:
+          PLAUSIBLE_API_KEY: ${{ secrets.PLAUSIBLE_API_KEY }}
+          PLAUSIBLE_SITE_ID: ${{ secrets.PLAUSIBLE_SITE_ID }}
+        run: |
+          python - <<'PY'
+          import os, csv, json, datetime, pathlib, urllib.request
+          API_KEY = os.environ['PLAUSIBLE_API_KEY']
+          SITE = os.environ['PLAUSIBLE_SITE_ID']
+          HEADERS = {'Authorization': f'Bearer {API_KEY}'}
+          def get(url):
+              req = urllib.request.Request(url, headers=HEADERS)
+              with urllib.request.urlopen(req, timeout=30) as r:
+                  return json.load(r)
+          today = datetime.date.today()
+          yday = today - datetime.timedelta(days=1)
+          base = "https://plausible.io/api/v1"
+          agg = get(f"{base}/stats/aggregate?site_id={SITE}&period=day&date={yday}&metrics=visitors,pageviews")
+          brk = get(f"{base}/stats/breakdown?site_id={SITE}&period=day&date={yday}&property=event:page&metrics=pageviews,visitors&limit=1000")
+          outdir = pathlib.Path("_reports"); outdir.mkdir(exist_ok=True)
+          path = outdir / f"plausible-{today.strftime('%Y-%m')}.csv"
+          rows = []
+          if path.exists():
+              with path.open() as fh:
+                  rows = list(csv.reader(fh))
+          if not rows or rows[0] != ["date","page","pageviews","visitors","total_pageviews","total_visitors"]:
+              rows = [["date","page","pageviews","visitors","total_pageviews","total_visitors"]]
+          total_pv = agg["results"].get("pageviews", 0) if agg.get("results") else 0
+          total_v = agg["results"].get("visitors", 0) if agg.get("results") else 0
+          for item in brk.get("results", []):
+              rows.append([yday.isoformat(), item["page"], str(item.get("pageviews", 0)), str(item.get("visitors", 0)), str(total_pv), str(total_v)])
+          with path.open("w", newline="") as fh:
+              csv.writer(fh).writerows(rows)
+          print("Wrote", path)
+          PY
+      - name: Commit report
+        run: |
+          git config user.name "jbinsights-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add _reports/ || true
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(analytics): update Plausible report"
+            git push
+          fi
