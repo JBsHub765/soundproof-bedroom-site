@@ -68,7 +68,11 @@ def fetch_breakdown(site_id: str, api_key: str, property: str, metrics: str, per
         "period": period,
         "date": date,
     }
-    return _request(API_ENDPOINT, params, headers)
+       try:
+        return _request(API_ENDPOINT, params, headers)
+    except Exception as exc:
+        print(f"Failed to fetch breakdown: {exc}", file=sys.stderr)
+        return {"results": []}
 
 
 def main() -> None:
