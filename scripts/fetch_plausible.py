@@ -67,18 +67,18 @@ def fetch_breakdown(site_id: str, api_key: str, property: str, metrics: str, per
         "metrics": metrics,
         "period": period,
         "date": date,
-    }
-       try:
-        return _request(API_ENDPOINT, params, headers)
-    except Exception as exc:
+        }
+           try:
+            return _request(API_ENDPOINT, params, headers)
+        except Exception as exc:
         print(f"Failed to fetch breakdown: {exc}", file=sys.stderr)
         return {"results": []}
 
 
 def main() -> None:
-    api_key = os.environ.get("PLAUSIBLE_API_KEY")
-    site_id = os.environ.get("PLAUSIBLE_SITE_ID")
-    if not api_key or not site_id:
+        api_key = os.environ.get("PLAUSIBLE_API_KEY")
+    sit    e_id = os.environ.get("PLAUSIBLE_SITE_ID")
+        if not api_key or not site_id:
         print("Missing PLAUSIBLE_API_KEY or PLAUSIBLE_SITE_ID", file=sys.stderr)
         sys.exit(1)
 
