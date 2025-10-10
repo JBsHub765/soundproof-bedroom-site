@@ -23,7 +23,7 @@ import json
 import os
 import pathlib
 import sys
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import urllib.request
 import urllib.parse
@@ -49,13 +49,13 @@ def fetch_breakdown(site_id: str, api_key: str, property: str, metrics: str, per
     Args:
         site_id: The Plausible site ID (domain) to query.
         api_key: The API key for authentication.
-        property: The property to break down by (e.g. 'page', 'event:page').
-        metrics: Comma-separated metrics (e.g. 'pageviews', 'events').
-        period: The period to query ('day', 'week', etc.).
-        date: Specific date in ISO format (YYYY-MM-DD).
+        property: The property to break down by (e.g. 'page', 'event_name').
+        metrics: Comma-separated metrics (e.g. 'pageviews', 'visitors', 'events').
+        period: The period to query ('day', 'week', 'month', etc.).
+        date: Specific date in ISO format (YYYY-MM-DD) to get metrics for.
 
     Returns:
-        Parsed JSON response.
+        Parsed JSON response containing the results list.
     """
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -67,75 +67,86 @@ def fetch_breakdown(site_id: str, api_key: str, property: str, metrics: str, per
         "metrics": metrics,
         "period": period,
         "date": date,
-        }
-           try:
-            return _request(API_ENDPOINT, params, headers)
-        except Exception as exc:
-        print(f"Failed to fetch breakdown: {exc}", file=sys.stderr)
-        return {"results": []}
+    }
+    return _request(API_ENDPOINT, params, headers)
 
 
 def main() -> None:
-        api_key = os.environ.get("PLAUSIBLE_API_KEY")
-    sit    e_id = os.environ.get("PLAUSIBLE_SITE_ID")
-        if not api_key or not site_id:
-        print("Missing PLAUSIBLE_API_KEY or PLAUSIBLE_SITE_ID", file=sys.stderr)
+    api_key = os.environ.get("PLAUSIBLE_API_KEY")
+    site_id = os.environ.get("PLAUSIBLE_SITE_ID")
+    if not api_key or not site_id:
+        print(
+            "Missing PLAUSIBLE_API_KEY or PLAUSIBLE_SITE_ID environment variables",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
-    # Use yesterday's date
+    # Use yesterday's date to allow Plausible time to aggregate data
     today = _dt.date.today()
     yesterday = today - _dt.timedelta(days=1)
     date_str = yesterday.isoformat()
 
-    # Get pageviews by page
-    page_data = fetch_breakdown(
-        site_id=site_id,
-        api_key=api_key,
-        property="page",
-        metrics="pageviews",
-        period="day",
-        date=date_str,
-    )
+    # Fetch pageviews breakdown by page. If the request fails (e.g. due to
+    # network issues or an unexpected API response), fall back to an empty result
+    try:
+        page_data = fetch_breakdown(
+            site_id=site_id,
+            api_key=api_key,
+            property="page",
+            metrics="pageviews",
+            period="day",
+            date=date_str,
+        )
+    except Exception as exc:
+        print(f"Failed to fetch pageviews: {exc}", file=sys.stderr)
+        page_data = {"results": []}
 
-    # Get events by page (counts pageviews + custom events)
-    event_data = fetch_breakdown(
-        site_id=site_id,
-        api_key=api_key,
-        property="event:page",
-        metrics="events",
-        period="day",
-        date=date_str,
-    )
+    # Fetch events breakdown by page. Plausible's Stats API v1 can return
+    # HTTP errors when combining certain properties/metrics; wrap in a
+    # try/except so a failure doesn't cause the workflow to fail.
+    try:
+        event_data = fetch_breakdown(
+            site_id=site_id,
+            api_key=api_key,
+            property="event:page",
+            metrics="events",
+            period="day",
+            date=date_str,
+        )
+    except Exception as exc:
+        print(f"Failed to fetch events: {exc}", file=sys.stderr)
+        event_data = {"results": []}
 
-    # Determine repo root and report path
+    # Prepare report directory and filename
     repo_root = pathlib.Path(__file__).resolve().parents[1]
     reports_dir = repo_root / "_reports"
     reports_dir.mkdir(parents=True, exist_ok=True)
     outfile = reports_dir / f"plausible-{yesterday.strftime('%Y-%m')}.csv"
 
-    # Load existing rows
-    rows = []
+    # Read existing rows if file exists
+    rows: list[list[str]] = []
     if outfile.exists():
         with outfile.open("r", newline="", encoding="utf-8") as fh:
             reader = csv.reader(fh)
             rows = list(reader)
-
     if not rows or rows[0] != ["date", "type", "name", "value"]:
         rows = [["date", "type", "name", "value"]]
 
-    # Append pageviews rows
+    # Append new rows for pageviews
     for result in page_data.get("results", []):
-        page = result.get("page", "")
-        count = result.get("pageviews", 0)
-        rows.append([date_str, "pageviews", page, str(count)])
+        name = result.get("page", "")
+        value = result.get("pageviews", 0)
+        rows.append([date_str, "pageviews", name, str(value)])
 
-    # Append events rows
+    # Append new rows for events. When breaking down by event:page,
+    # Plausible returns a ``page`` key for each result. ``events`` counts both
+    # pageviews and custom events (e.g., our affiliate clicks) on that page.
     for result in event_data.get("results", []):
-        page = result.get("page", "")
-        count = result.get("events", 0)
-        rows.append([date_str, "events", page, str(count)])
+        name = result.get("page", "")
+        value = result.get("events", 0)
+        rows.append([date_str, "events", name, str(value)])
 
-    # Write out file
+    # Write CSV file
     with outfile.open("w", newline="", encoding="utf-8") as fh:
         writer = csv.writer(fh)
         writer.writerows(rows)
