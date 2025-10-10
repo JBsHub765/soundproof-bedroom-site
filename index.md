@@ -11,6 +11,8 @@ Your destination for expert product recommendations and practical tips to create
 ## Latest guides
  - [Best Ergonomic Keyboards for Comfortable Typing]({{ site.baseurl }}/posts/best-ergonomic-keyboards)
 
+ - [Best White Noise Machines for Better Sleep]({{ site.baseurl }}/posts/best-white-noise-machines)
+
  - [Best Power Banks and Portable Chargers for Travel and Emergencies]({{ site.baseurl }}/posts/best-power-banks)
 
  - [Best Outdoor Security Cameras for Reliable Home Protection]({{ site.baseurl }}/posts/best-outdoor-security-cameras)
@@ -29,4 +31,4 @@ Check back every week for new articles and updates. We regularly post fresh insi
 
 ## About, Contact & Policies
 
-Learn more about who we are on the [About]({{ site.baseurl }}/about/) page, get in touch via our [Contact]({{ site.baseurl }}/contact/) page, read our [Privacy Policy]({{ site.baseurl }}/privacy-policy/) page, and see our [Affiliate Disclosure]({{ site.baseurl }}/affiliate-disclosure/) for details on how we earn from affiliate links.
+Learn more about who we are on the [About]({{ site.baseurl }}/about/) page, get in touch via our [Contact]({{ site.baseurl }}/contact/) page, read our [Privacy Policy]({{ site.baseurl }}/privacy-policy/), and see our [Affiliate Disclosure]({{ site.baseurl }}/affiliate-disclosure/) for details on how we earn from affiliate links.
