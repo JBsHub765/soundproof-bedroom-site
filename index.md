@@ -12,6 +12,7 @@ Your destination for expert product recommendations and practical tips to create
  - [Best Ergonomic Keyboards for Comfortable Typing]({{ site.baseurl }}/posts/best-ergonomic-keyboards)
 
  - [Best White Noise Machines for Better Sleep]({{ site.baseurl }}/posts/best-white-noise-machines)
+- [Best Ergonomic Footrests for Comfortable Workstations]({{ site.baseurl }}/posts/best-ergonomic-footrests)
 
  - [Best Power Banks and Portable Chargers for Travel and Emergencies]({{ site.baseurl }}/posts/best-power-banks)
 
